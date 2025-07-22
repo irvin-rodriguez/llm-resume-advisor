@@ -1,0 +1,11 @@
+# Ignore API keys and secrets
+.env
+config.py
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Streamlit config/cache (optional but recommended)
+.streamlit/config.toml
+.streamlit/secrets.toml
