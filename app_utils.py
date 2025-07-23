@@ -54,15 +54,15 @@ def show_match_gauge(score: int):
                          },
                          'steps': [
                              {
-                                 'range': [0, 40],
+                                 'range': [0, 50],
                                  'color': "red"
                              },
                              {
-                                 'range': [40, 70],
+                                 'range': [50, 75],
                                  'color': "yellow"
                              },
                              {
-                                 'range': [70, 100],
+                                 'range': [75, 100],
                                  'color': "green"
                              },
                          ],

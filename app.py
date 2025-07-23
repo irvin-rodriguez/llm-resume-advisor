@@ -5,6 +5,7 @@ Allows user to upload resumes, input desired job title and descriptions, and rec
 """
 
 import streamlit as st
+import pandas as pd
 from app_utils import read_pdf, show_match_gauge
 from llm_utils import *
 
@@ -37,10 +38,22 @@ if st.session_state.page == "form":
             st.session_state.job_position = job_pos
             st.session_state.job_description = job_desc
             st.session_state.parsed_resume = parse_resume(resume_text)
-            st.session_state.resume_analysis = analyze_resume(
+
+            st.session_state.general_feedback = get_general_feedback(
                 job_pos, job_desc, st.session_state.parsed_resume)
+            st.session_state.desired_skills = get_desired_skills(job_desc)
+            st.session_state.skill_match = get_skill_match(
+                st.session_state.parsed_resume,
+                st.session_state.desired_skills)
+
+            st.session_state.debug_outputs = {
+                "parsed_resume": st.session_state.parsed_resume,
+                "desired_skills": st.session_state.desired_skills,
+                "skill_match": st.session_state.skill_match
+            }
 
             st.session_state.page = "review"
+            st.rerun()
 
 # ----- Page 2: Review Submission -----
 elif st.session_state.page == "review":
@@ -60,27 +73,43 @@ elif st.session_state.page == "review":
         st.title("AI Resume Assistant")
 
         # Match Gauge
+        # score = st.session_state.resume_analysis["match_score"]
         st.plotly_chart(show_match_gauge(score=50), use_container_width=True)
 
+        with st.expander("Debug Outputs", expanded=False):
+            st.json(st.session_state.debug_outputs)
+
         with st.expander("General Suggestions", expanded=True):
-            if st.button("Generate Suggestions"):
-                print("General Suggestions Here")
+            st.write(st.session_state.general_feedback)
 
-        with st.expander("Hard and Soft Skill Match", expanded=False):
-            if st.button("Analyze Skills"):
-                print("Analyzed Skills Here")
+        with st.expander("Hard and Soft Skill Match", expanded=True):
+            st.markdown(
+                "This table compares desired hard and soft skills from the job description against your resume."
+            )
 
-        with st.expander("Specific Editing", expanded=False):
-            user_input = st.text_area(
-                "What part of the resume do you want to rewrite?")
-            if st.button("Start Editing Chat"):
-                print("Chat Here")
+            skill_match = st.session_state.skill_match
 
-    # # Button to get AI feedback
-    # if st.button("Get Resume Feedback"):
-    #     feedback = get_general_feedback(
-    #         parsed_resume=st.session_state.parsed_resume,
-    #         job_pos=st.session_state.job_position,
-    #         job_desc=st.session_state.job_description)
-    #     st.subheader("Suggested Improvements:")
-    #     st.write(feedback)
+            # Create DataFrames for hard and soft skills
+            for skill_type, label in [("hard_skills", "Hard Skills"),
+                                      ("soft_skills", "Soft Skills")]:
+                skill_data = skill_match.get(skill_type, [])
+                if skill_data:
+                    df = pd.DataFrame(skill_data)
+                    df["Present?"] = df["present"].map({True: "✅", False: "❌"})
+                    df = df[["skill", "Present?"
+                             ]].rename(columns={"skill": f"Desired {label}"})
+
+                    st.markdown(f"### {label}")
+                    st.table(df)
+                else:
+                    st.markdown(f"_No {label.lower()} detected._")
+
+        # with st.expander("Specific Editing", expanded=False):
+        #     st.markdown("Highlight or paste a sentence from your resume you'd like to improve.")
+        #     to_edit = st.text_area("Paste the sentence to improve:", height=80)
+
+        #     if st.button("Suggest Rewriting"):
+        #         if not to_edit.strip():
+        #             st.warning("Please paste something from your resume first.")
+        #         else:
+        #             print("HI")
