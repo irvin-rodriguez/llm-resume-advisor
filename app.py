@@ -6,7 +6,7 @@ Allows user to upload resumes, input desired job title and descriptions, and rec
 
 import streamlit as st
 import pandas as pd
-from app_utils import read_pdf, show_match_gauge
+from app_utils import *
 from llm_utils import *
 
 # ----- Page Settings -----
@@ -66,18 +66,19 @@ elif st.session_state.page == "review":
 
     with col1:
         st.title("Your Resume")
-        st.markdown(st.session_state.parsed_resume)
-        # st.code(st.session_state.parsed_resume, language="markdown")
+        st.write(st.session_state.parsed_resume)
 
     with col2:
         st.title("AI Resume Assistant")
 
         # Match Gauge
-        # score = st.session_state.resume_analysis["match_score"]
-        st.plotly_chart(show_match_gauge(score=50), use_container_width=True)
+        skill_match = st.session_state.skill_match
 
-        with st.expander("Debug Outputs", expanded=False):
-            st.json(st.session_state.debug_outputs)
+        score = compute_match_score(skill_match)
+        st.plotly_chart(show_match_gauge(score), use_container_width=True)
+
+        # with st.expander("Debug Outputs", expanded=False):
+        #     st.json(st.session_state.debug_outputs)
 
         with st.expander("General Suggestions", expanded=True):
             st.write(st.session_state.general_feedback)
@@ -86,8 +87,6 @@ elif st.session_state.page == "review":
             st.markdown(
                 "This table compares desired hard and soft skills from the job description against your resume."
             )
-
-            skill_match = st.session_state.skill_match
 
             # Create DataFrames for hard and soft skills
             for skill_type, label in [("hard_skills", "Hard Skills"),
@@ -103,13 +102,3 @@ elif st.session_state.page == "review":
                     st.table(df)
                 else:
                     st.markdown(f"_No {label.lower()} detected._")
-
-        # with st.expander("Specific Editing", expanded=False):
-        #     st.markdown("Highlight or paste a sentence from your resume you'd like to improve.")
-        #     to_edit = st.text_area("Paste the sentence to improve:", height=80)
-
-        #     if st.button("Suggest Rewriting"):
-        #         if not to_edit.strip():
-        #             st.warning("Please paste something from your resume first.")
-        #         else:
-        #             print("HI")

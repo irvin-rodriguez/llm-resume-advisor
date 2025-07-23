@@ -9,20 +9,22 @@ from config import OPENAI_API_KEY
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-MODE = "prototype"  # or 'production'
+MODE = "production"  # or 'production'
 
 MODEL_LOOKUP = {
     "prototype": {
         "parse_resume": "gpt-3.5-turbo",
         "get_general_feedback": "gpt-3.5-turbo",
         "get_desired_skills": "gpt-3.5-turbo",
-        "get_skill_match": "gpt-3.5-turbo"
+        "get_skill_match": "gpt-3.5-turbo",
+        "suggest_rewrite": "gpt-3.5-turbo"
     },
     "production": {
         "parse_resume": "gpt-4-1106-preview",
         "get_general_feedback": "gpt-4-1106-preview",
         "get_desired_skills": "gpt-4-1106-preview",
-        "get_skill_match": "gpt-4-1106-preview"
+        "get_skill_match": "gpt-4-1106-preview",
+        "suggest_rewrite": "gpt-4-1106-preview"
     }
 }
 

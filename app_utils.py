@@ -74,3 +74,20 @@ def show_match_gauge(score: int):
         margin=dict(t=50, b=10, l=10, r=10))
 
     return fig
+
+def compute_match_score(skill_match):
+    """
+    Compute the percentage of skills marked as present from skill_match.
+
+    Args:
+        skill_match (dict): A dictionary with keys hard/soft skills and whether they are present in the resume.
+
+    Returns:
+        int: Match score as an integer (0–100)
+    """
+    all_skills = skill_match.get("hard_skills", []) + skill_match.get("soft_skills", [])
+    num_total = len(all_skills)
+    if num_total == 0:
+        return 0
+    num_present = sum(skill.get("present", False) for skill in all_skills)
+    return int((num_present / num_total) * 100)
