@@ -17,19 +17,18 @@ The AI Resume Analyzer is a two-page Streamlit app that allows users to upload a
 - **LLM Integration**: Multiple OpenAI GPT-4 endpoints are used for parsing, reasoning, and skill matching.
 - **Prompt Engineering**: Each task is wrapped in a carefully structured prompt designed for a specific function—e.g., parsing markdown, identifying implied skills, generating qualitative feedback.
 - **Function Calling**: The app leverages OpenAI's function-calling tools to extract and return structured data from unstructured job descriptions.
-- **Interactive UI**: Streamlit provides a responsive interface where users can navigate from input to feedback seamlessly.
+- **Interactive UI**: Utilizes Streamlit to proide an interface where users can upload their resumes and recieve feedback seamlessly.
 - **Match Score Visualization**: A Plotly gauge chart gives an at-a-glance measure of how well the resume fits the job description.
 
 ## Skills Practiced
 
 This project was designed to strengthen competencies in:
 
-- Calling the OpenAI API via the `openai` Python SDK (v1+)
+- Calling the OpenAI API via the `openai` Python
 - Designing chain-of-thought prompts for LLM-assisted analysis
 - Building modular, testable prompt pipelines
 - Using JSON schema tools with function-calling to structure LLM outputs
 - Deploying interactive applications using Streamlit
-- Processing PDF resumes with `pdfminer`
 
 ## How It Works
 
@@ -37,14 +36,8 @@ This project was designed to strengthen competencies in:
 2. **Job description is parsed** → GPT extracts hard and soft skills into JSON via function-calling.
 3. **Resume is parsed into Markdown** → Clean structure, no rewriting.
 4. **Skill matching** → GPT semantically compares each skill to the resume.
-5. **Feedback generated** → GPT gives a one-paragraph critique tailored to the job.
-6. **Results displayed** → Skill table, match score gauge, feedback text.
-
-## Notes
-
-- This app defaults to using GPT-4 (`gpt-4-1106-preview`) for all tasks in "production" mode.
-- A "prototype" mode is available with lighter models (GPT-3.5) for cheaper experimentation.
-- No resume data is stored; the app is fully session-based and ephemeral.
+5. **Feedback generated** → GPT gives critiques tailored to the job.
+6. **Results displayed** → Skill match table, match score gauge, feedback text.
 
 ## Why This Project
 
